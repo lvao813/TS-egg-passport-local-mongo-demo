@@ -1,0 +1,40 @@
+{
+  "extends": "tslint:latest",
+  "rules": {
+    "quotemark": false,
+    "no-console": [
+      false
+    ],
+    "space-before-function-paren": false,
+    "interface-name": [
+      true,
+      "never-prefix"
+    ],
+    "adjacent-overload-signatures": true,
+    "member-access": [
+      false
+    ],
+    "one-line":false,
+    "member-ordering": [
+      true,
+      {
+        "order": "fields-first"
+      }
+    ],
+    "object-literal-sort-keys": false,
+    "max-classes-per-file": [
+      true,
+      10
+    ],
+    "variable-name": false,
+    "align": [true, "statements"],
+    "prefer-const":false,  //关闭强制const变量声明
+    "no-var-requires": true,//禁止ES5的require引用
+    "no-var-keyword": true, //禁止使用var来声明变量
+    //每行代码的字符数量不能超过120个，除去部分情况，请尽量换行，
+    "max-line-length": [true, {"limit": 120, "ignore-pattern": "^import |^export {(.*?)}"}]
+    // "no-namespace": false, 
+    
+  }
+}
+
