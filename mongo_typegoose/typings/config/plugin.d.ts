@@ -4,3 +4,4 @@
 import 'egg'; // Make sure ts to import egg declaration at first
 import 'egg-passport';
 import 'egg-passport-local';
+import 'egg-grpc';

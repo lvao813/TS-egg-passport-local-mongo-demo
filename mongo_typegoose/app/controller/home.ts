@@ -3,9 +3,17 @@ import { Controller } from 'egg';
 export default class HomeController extends Controller {
 
   public async index() {
-    const { ctx } = this;
-    console.log('home_ctx', ctx.user);
-    ctx.body = await ctx.service.test.sayHi('egg');
+    try {
+      const { ctx } = this;
+      console.log('home_ctx', ctx.user);
+      const client = ctx.grpc.egg.share.showCase;
+      const result = await client.echo({ code: '200' });
+      console.log('grpc_result', result);
+      ctx.body = await ctx.service.test.sayHi('egg');
+    } catch (error) {
+      console.log(error);
+    }
+
   }
   public async success(){
     const { ctx } = this;

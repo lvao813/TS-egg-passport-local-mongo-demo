@@ -18,6 +18,12 @@ export default (appInfo: EggAppInfo) => {
     usernameField: 'name',
     passwordField: 'password',
   };
+  config.grpc = {
+    endpoint: 'localhost:50051',
+    // dir: 'app/proto', // proto files dir, relative path
+    // property: 'grpc', // default attach to `ctx.grpc.**`
+    // loadOpts: { convertFieldsToCamelCase: true, }, // message field case: `string user_name` -> `userName`
+  };
   // add your special config in here
   const bizConfig = {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,

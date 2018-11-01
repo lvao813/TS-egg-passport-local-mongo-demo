@@ -14,6 +14,10 @@ const plugin: EggPlugin = {
     enable: true,
     package: 'egg-passport-local',
   },
+  grpc: {
+    enable: true,
+    package: 'egg-grpc',
+  },
 
 };
 
