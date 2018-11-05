@@ -4,4 +4,7 @@ export default class User extends Typegoose {
     name?: string;
     @prop()
     password?: string;
+
+    @prop()
+    nickname?: string;
 }

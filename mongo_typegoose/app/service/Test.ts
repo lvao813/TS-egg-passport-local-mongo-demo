@@ -21,9 +21,9 @@ export default class Test extends Service {
   // prints { _id: 59218f686409d670a97e53e0, name: 'JohnDoe', __v: 0 }
       console.log('user_t', user_t);
       console.log('user', user);
+      return `hi, ${name}`;
     } catch (error) {
-      console.log(error);
+      return error;
     }
-    return `hi, ${name}`;
   }
 }

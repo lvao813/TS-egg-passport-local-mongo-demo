@@ -2,6 +2,7 @@ import { Application } from 'egg';
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';
 import User from './entity/user';
+import MD5 = require('md5');
 const UserModel = new User().getModelForClass(User);
 import newLocal = require('passport-local');
 const LocalStrategy = newLocal.Strategy;
@@ -9,6 +10,7 @@ export default (app: Application) => {
     app.beforeStart(async () => {
         try {
             mongoose.connect('mongodb://test:123456@127.0.0.1:27017/test');
+
             console.log('初始化成功');
         } catch (error) {
             console.log(error);
@@ -20,7 +22,8 @@ export default (app: Application) => {
     app.passport.use(new LocalStrategy({
         passReqToCallback: true,
       }, (ctx, _name, _password, done) => {
-
+            let pass_md5 = MD5(_password);
+            console.log('passmd5==========>', pass_md5);
             console.log('ctx.body:', ctx.body);
             console.log('name', _name);
             console.log('password', _password);
@@ -28,21 +31,28 @@ export default (app: Application) => {
                 if (err){ return done(err); }
                 if (!request){
 
-                    return done(new Error('用户不存在，请重新输入'));
+                    // return done(new Error('用户不存在，请重新输入'));
 
                 }
-                UserModel.findOne({password: _password}, (error, user) => {
+                // let passmd5 = MD5(_password);
+                // console.log('passmd5==========>', passmd5);
+                UserModel.findOne({name: _name, password: pass_md5}, (error, user) => {
                     if (err){ return done(error); }
                     if (!request){
                         console.log('密码错误');
-                        return done(new Error('密码错误，请重新输入'));
+                        // return done(new Error('密码错误，请重新输入'));
                     }
+                    console.log('passport======>', user);
                     return done(undefined, user);
                     });
             });
         // format user
-
       }));
+    // app.passport.verify(async (ctx, user) => {
+    //     console.log('========================>');
+    //     console.log('verify_ctx', ctx);
+    //     console.log('verify_user', user);
+    //     });
     app.passport.serializeUser(async (ctx, user) => {
         console.log('serializeUser');
         console.log(ctx.user);
@@ -67,9 +77,6 @@ export default (app: Application) => {
         }
         return user;
       });
-      // 处理用户信息
-    // app.plugins.passport.verify(async (ctx, user) => {}); // 校验用户
-    // app.plugins.passport.serializeUser(async (ctx, user) => {}); // 序列化用户信息后存储进 session
-    // app.plugins.passport.deserializeUser(async (ctx, user) => {}); // 反序列化后取出用户信息
+
     console.log('appstart');
 };

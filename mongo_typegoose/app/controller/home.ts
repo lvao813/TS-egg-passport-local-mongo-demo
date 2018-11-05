@@ -1,11 +1,15 @@
 import { Controller } from 'egg';
-
+import * as mongoose from 'mongoose';
+import User from '../../entity/user';
+import assert = require('power-assert');
+import * as enums from '../common/core/enum';
+import * as IF from '../common/interface';
 export default class HomeController extends Controller {
 
   public async index() {
     try {
       const { ctx } = this;
-      console.log('home_ctx', ctx.user);
+      console.log('home_ctx', ctx);
       const client = ctx.grpc.egg.share.showCase;
       const result = await client.echo({ code: '200' });
       console.log('grpc_result', result);
@@ -17,36 +21,27 @@ export default class HomeController extends Controller {
   }
   public async success(){
     const { ctx } = this;
-    ctx.body = JSON.stringify({
-      code: 1,
-      msg: '成功',
-    });
+    try {
+      console.log('===============.', ctx.user);
+      assert(ctx.isAuthenticated(), '用户未登录');
+      const UserModel = new User().getModelForClass(User);
+      const user = await UserModel.findById(mongoose.Types.ObjectId(ctx.user._id), 'nickname');
+
+      console.log('===============.', user);
+
+      let _user: IF.SqlUser = {
+      id: user._id,
+      nickname: user.nickname,
+    };
+      ctx.body = new enums.Success(0, '查找成功', _user);
+    } catch (error) {
+      ctx.body = new enums.Failure(-5, error.message);
+    }
   }
   public async login(){
     const { ctx } = this;
-    ctx.body = `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>LoginPage</title>
-    </head>
-    <body>
-        <form action="/login" method="post">
-            <input type="hidden" name="_csrf" value="${this.ctx.csrf}">
-            <label for="username">
-                Username:
-                <input type="text" value="JohnDoe" id="username" name="username">
-            </label>
-            <label for="password">
-                Password:
-                <input type="text" value="123456" id="password" name="password">
-            </label>
-    
-            <input type="submit" value="Submit">
-        </form>
-    </body>
-    </html>`;
+    console.log('log========');
+    ctx.body = new enums.Failure(1, '登录失败');
   }
+
 }
